@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid"
 import { type ChangeEvent, type Dispatch, type FormEvent, useState, useEffect } from "react"
-import type { Activity} from "../types"
+import type { Activity } from "../types"
 import type { ActivityActions, ActivityState } from "../reducers/activity-reducers"
 import { categories } from "../data/categories"
 
@@ -16,18 +16,18 @@ const initialST: Activity = {
     calories: 0
 }
 
-function Form({dispatch, state}: FormProps) {
+function Form({ dispatch, state }: FormProps) {
 
     const [activity, setActivity] = useState<Activity>(initialST)
 
     useEffect(() => {
-        if(state.activeId){
+        if (state.activeId) {
             const selectedActivity = state.activities.filter(stateActivity => stateActivity.id === state.activeId)[0]
-            if(selectedActivity){
+            if (selectedActivity) {
                 setActivity(selectedActivity)
             }
         }
-    },[state.activeId]) //Este useEffect se ejecuta cada vez que el estado de activeId cambia y lo que hace es que captura el activeId y lo coloca en el formulario llenando asi los campos.   
+    }, [state.activeId]) //Este useEffect se ejecuta cada vez que el estado de activeId cambia y lo que hace es que captura el activeId y lo coloca en el formulario llenando asi los campos.   
 
     const handleChange = (e: ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>) => {
 
@@ -47,12 +47,13 @@ function Form({dispatch, state}: FormProps) {
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        dispatch({type: "save-activity", payload: {newActivity:  activity}})
+        dispatch({ type: "save-activity", payload: { newActivity: activity } })
 
         setActivity({
             ...initialST,
             id: uuidv4()
         })
+
     }
 
     return (

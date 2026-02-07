@@ -1,4 +1,4 @@
-import { useReducer } from "react"
+import { useReducer, useEffect, useMemo } from "react"
 import Form from "./components/Form"
 import ActivityList from "./components/ActivityList"
 import { activityReducer, initialState } from "./reducers/activity-reducers"
@@ -7,29 +7,39 @@ import { activityReducer, initialState } from "./reducers/activity-reducers"
 function App() {
 
   const [state, dispatch] = useReducer(activityReducer, initialState)
-  
+
+  useEffect(() => {
+    localStorage.setItem('activities', JSON.stringify(state.activities))
+  }, [state.activities])
+
+  const canRestartApp = useMemo(() => state.activities.length > 0, [state.activities])
+
   return (
     <>
       <header className="bg-lime-600 py-3">
         <div className="max-w-4xl mx-auto flex justify-between">
-          <h1 className="text-center text-lg font-bold text-white uppercase">Contador de calorías</h1>
+          <h1 className="text-center text-lg font-bold text-white uppercase p-2">Contador de calorías</h1>
+          <button
+            className="bg-gray-800 p-2 rounded-lg text-white font-bold hover:bg-gray-900 cursor-pointer disabled:opacity-10 disabled:cursor-not-allowed"
+            onClick={() => dispatch({ type: 'restart_app' })}
+            disabled={!canRestartApp}
+          >
+            Reiniciar App
+          </button>
         </div>
-        <button>
-          Reiniciar
-        </button>
       </header>
       <section className="bg-lime-500 py-20 px-5">
         <div className="max-w-4xl mx-auto">
-          <Form 
+          <Form
             dispatch={dispatch}
-            state = {state}
+            state={state}
           />
         </div>
       </section>
 
       <section className="p-10 mx-auto max-w-4xl">
         <ActivityList
-          activities = {state.activities}
+          activities={state.activities}
           dispatch={dispatch}
         />
       </section>
